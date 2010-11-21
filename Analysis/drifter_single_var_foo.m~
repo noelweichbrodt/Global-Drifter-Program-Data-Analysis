@@ -1,0 +1,3 @@
+data;
+data[2:5];
+[b,dev,stats] = glmfit(X,y,distr)    
