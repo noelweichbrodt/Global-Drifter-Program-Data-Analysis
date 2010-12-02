@@ -6,7 +6,6 @@ arc2007Clean = drifterDataClean(arc2007);
 [platID2008 obsLat2008 obsLong2008 sst2008 ewCurrent2008 nsCurrent2008 eLat2008 eLong2008 expNum2008 wmo2008 drogue2008]=drifterDataImport('Data/2008_k_arc.csv');
 arc2008 = [platID2008 obsLat2008 obsLong2008 sst2008 ewCurrent2008 nsCurrent2008 eLat2008 eLong2008 expNum2008 wmo2008 drogue2008];
 arc2008Clean = drifterDataClean(arc2008);
-[platID2008Clean obsLat2008Clean obsLong2008Clean sst2008Clean ewCurrent2008Clean nsCurrent2008Clean eLat2008Clean eLong2008Clean expNum2008Clean wmo2008Clean drogue2008Clean]
 
 %Create subsets of data for analysis
 length(drogue2007)-length(drogue2007Clean)
@@ -62,8 +61,17 @@ sstRawDOnStats.se
 
 avgGLMPValues=mean(cat(2,sstRawDOnStats.p,sstdoffstats.p,sstDOnStats.p),2);
 
+%Compare 2007 glmfit using 2008 data against sat sst for 2008.
+%[sst2008FitDOn, confidenceLow2008FitDOn,confidenceHigh2008FitDOn] = glmval(sstDonFit,arc2008Clean,'probit',sstDOnStats);
+
 %why is the fit always bad? need a proper fit in order to run a useful
 %regression.
+
+%Compute yearly average of sst from 2008 data, compare agaist sat sst from
+%2008.
+%estimate yearly average as the average of all sst observations that year.
+%Use 2008 non-sst data, fitting from 2007 data.
+[sst2008yhatDOn, confidenceLow2008DOn,confidenceHigh2008DOn] = glmval(sstDOnFit,arc2008Clean,'probit',sstDOnStats);
 
 %Plot the analysis results
 plot(1:12,sstdoffstats.se,1:12,sstDOnStats.se,'Linewidth',2)
@@ -88,3 +96,18 @@ plot(1:12,avgGLMPValues)
 xlabel('coefficients')
 ylabel('mean of p-values in glmfit')
 title('mean of p-values for 12 data vectors with drogue on/off, sst, and raw/clean analysis')
+
+
+% hold on;
+% plot(arc2008DOnSST,sst2008FitDOn)
+% xlabel('Drifter SST Measurements')
+% ylabel('y-hat estimates for SST measurements')
+% title('GLM Value y-hat estimates for 2008 Arctic SST vs Actual Measurements') 
+
+%[b,dev,stats] = glmfit(X,y,distr)
+% x = [2100 2300 2500 2700 2900 3100 3300 3500 3700 3900 4100 4300]';
+% n = [48 42 31 34 31 21 23 23 21 16 17 21]';
+% y = [1 2 0 3 8 8 14 17 19 15 17 21]';
+% b = glmfit(x,[y n],'poisson','link','probit');
+% yfit = glmval(b, x,'probit','size', n);
+% plot(x, y./n,'o',x,yfit./n,'-','LineWidth',2)

@@ -1,0 +1,13 @@
+function [platID obsLat obsLong sst ewCurrent nsCurrent eLat eLong expNum wmo drogue] = drifterDataClean(data)
+%Clean up data using list-wise deletion.
+[cleanrow cleancol] = find(data==999.9999);
+data(cleanrow,:) = [];
+platID=data(1);
+obsLat=data(2);
+obsLong=data(3);
+sst=data(4);
+ewCurrent=data(5);
+nsCurrent=data(6);
+eLat=data(7);
+eLong=data(8);
+expNum=data(9 wmo drogue]

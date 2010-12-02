@@ -1,0 +1,12 @@
+function [platID obsLat obsLong sst ewCurrent nsCurrent eLat eLong expNum wmo drogue] = drifterDataExplodeColumns(data)
+platID=data(:,1);
+obsLat=data(:,2);
+obsLong=data(:,3);
+sst=data(:,4);
+ewCurrent=data(:,5);
+nsCurrent=data(:,6);
+eLat=data(:,7);
+eLong=data(:,8);
+expNum=data(:,9);
+wmo=data(:,10);
+drogue=data(:,11);
