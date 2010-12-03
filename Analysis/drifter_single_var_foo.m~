@@ -1,25 +1,34 @@
 %Read in data
-[platID2007 obsLat2007 obsLong2007 sst2007 ewCurrent2007 nsCurrent2007 eLat2007 eLong2007 expNum2007 wmo2007 drogue2007]=drifterDataImport('Data/2007_k_arc.csv');
-arc2007 = [platID2007 obsLat2007 obsLong2007 sst2007 ewCurrent2007 nsCurrent2007 eLat2007 eLong2007 expNum2007 wmo2007 drogue2007];
+[platID2007 obsTime2007 obsLat2007 obsLong2007 sst2007 ewCurrent2007 ... 
+    nsCurrent2007 eLat2007 eLong2007 expNum2007 wmo2007 drogue2007] = ... 
+    drifterDataImport('Data/2007_k_arc.csv');
+arc2007 = [platID2007 obsTime2007 obsLat2007 obsLong2007 sst2007 ...
+    ewCurrent2007 nsCurrent2007 eLat2007 eLong2007 expNum2007 wmo2007 drogue2007];
 arc2007Clean = drifterDataClean(arc2007);
-[platID2007Clean obsLat2007Clean obsLong2007Clean sst2007Clean ewCurrent2007Clean nsCurrent2007Clean eLat2007Clean eLong2007Clean expNum2007Clean wmo2007Clean drogue2007Clean]=drifterDataExplodeColumns(arc2007Clean);
-[platID2008 obsLat2008 obsLong2008 sst2008 ewCurrent2008 nsCurrent2008 eLat2008 eLong2008 expNum2008 wmo2008 drogue2008]=drifterDataImport('Data/2008_k_arc.csv');
-arc2008 = [platID2008 obsLat2008 obsLong2008 sst2008 ewCurrent2008 nsCurrent2008 eLat2008 eLong2008 expNum2008 wmo2008 drogue2008];
-arc2008Clean = drifterDataClean(arc2008);
-[platID2008Clean obsLat2008Clean obsLong2007Clean sst2007Clean ewCurrent2007Clean nsCurrent2007Clean eLat2007Clean eLong2007Clean expNum2007Clean wmo2007Clean drogue2007Clean]
+[platID2007Clean obsTime2007Clean obsLat2007Clean obsLong2007Clean sst2007Clean ... 
+    ewCurrent2007Clean nsCurrent2007Clean eLat2007Clean eLong2007Clean ...
+    expNum2007Clean wmo2007Clean drogue2007Clean]=drifterDataExplodeColumns(arc2007Clean);
 
 %Create subsets of data for analysis
 length(drogue2007)-length(drogue2007Clean)
-arc2007doff=arc2007Clean(logical(~drogue2007Clean),:);
+
+arc2007DOff=arc2007Clean(logical(~drogue2007Clean),:);
+arc2007PredictorsCleanDOff=cat(2,arc2007DOff(:,1:4),arc2007DOff(:,6:12));
+arc2007ResponseCleanDOff = arc2007DOff(:,5);
+
+arc2007DOn=arc2007Clean(logical(drogue2007Clean),:);
+arc2007DOnPredictorsClean=cat(2,arc2007DOn(:,1:4),arc2007DOn(:,6:12));
+arc2007DOnResponseClean = arc2007DOn(:,5);
+
+arc2007DonRaw=arc2007(logical(drogue2007),:);
+arc2007DOnPredictorsRaw=cat(2,arc2007DonRaw(:,1:4),arc2007DonRaw(:,6:12));
+arc2007DOnResponseRaw=arc2007DonRaw(:,5);
+
 arc2007don=arc2007Clean(logical(drogue2007Clean),:);
 arc2007dondrogue=arc2007Clean(logical(drogue2007Clean),11);
-arc2007doffdrogue=arc2007Clean(logical(~drogue2007Clean),11);
-arc2007donsst=arc2007Clean(logical(drogue2007Clean),4);
-arc2007doffsst=arc2007Clean(logical(~drogue2007Clean),4);
+arc2007DOffdrogue=arc2007Clean(logical(~drogue2007Clean),11);
 arc2007RawDOn=arc2007(logical(drogue2007),:);
 arc2007RawDOnSST=arc2007(logical(drogue2007),4);
-arc2008DOnSST=arc2008Clean(logical(~arc2008Clean(:,11)),4);
-arc2008DOffSST=arc2008Clean(logical(arc2008Clean(:,11)),4);
 
 %analysis: standard error on drogue on/off, coefficients on sst, standard
 %error on clean vs unclean data on sst.
@@ -36,25 +45,25 @@ drogueonstats.p
 drogueonstats.coeffcorr
 drogueonstats.se
 
-[drogueofffit,drogueOffDev,drogueoffstats]=glmfit(arc2007doff,arc2007doffdrogue,'normal');
+[drogueofffit,drogueOffDev,drogueoffstats]=glmfit(arc2007DOff,arc2007DOffdrogue,'normal');
 drogueofffit
 drogueoffstats.p
 drogueoffstats.coeffcorr
 drogueoffstats.se
 
-[sstDonFit,sstDOnDev,sstDOnStats]=glmfit(arc2007don,arc2007donsst,'normal');
+[sstDonFit,sstDOnDev,sstDOnStats]=glmfit(arc2007DOnPredictorsClean,arc2007DOnResponseClean,'normal');
 sstDonFit
 sstDOnStats.p
 sstDOnStats.coeffcorr
 sstDOnStats.se
 
-[sstdofffit,sstDOffDev,sstdoffstats]=glmfit(arc2007doff,arc2007doffsst,'normal');
+[sstdofffit,sstDOffDev,sstdoffstats]=glmfit(arc2007PredictorsCleanDOff,arc2007ResponseCleanDOff,'normal');
 sstdofffit
 sstdoffstats.p
 sstdoffstats.coeffcorr
 sstdoffstats.se
 
-[sstRawDOnFit,sstDOnDev,sstRawDOnStats]=glmfit(arc2007RawDOn,arc2007RawDOnSST,'normal');
+[sstRawDOnFit,sstDOnDev,sstRawDOnStats]=glmfit(arc2007DOnPredictorsRaw,arc2007DOnResponseRaw,'normal');
 sstRawDOnFit
 sstRawDOnStats.p
 sstRawDOnStats.coeffcorr
@@ -62,53 +71,48 @@ sstRawDOnStats.se
 
 avgGLMPValues=mean(cat(2,sstRawDOnStats.p,sstdoffstats.p,sstDOnStats.p),2);
 
-%Compare 2007 glmfit using 2008 data against sat sst for 2008.
-%[sst2008FitDOn, confidenceLow2008FitDOn,confidenceHigh2008FitDOn] = glmval(sstDonFit,arc2008Clean,'probit',sstDOnStats);
-
 %why is the fit always bad? need a proper fit in order to run a useful
 %regression.
 
-%Compute yearly average of sst from 2008 data, compare agaist sat sst from
-%2008.
-%estimate yearly average as the average of all sst observations that year.
-%Use 2008 non-sst data, fitting from 2007 data.
-[sst2008yhatDOn, confidenceLow2008DOn,confidenceHigh2008DOn] = glmval(sstDOnFit,arc2008Clean,'probit',sstDOnStats);
-
 %Plot the analysis results
+figure;
 plot(1:12,sstdoffstats.se,1:12,sstDOnStats.se,'Linewidth',2)
 xlabel('coefficients')
 ylabel('standard errors in glmfit')
 title('Drogue on/off standard error from glmfit on sea surface temperatures') 
 legend('drogue off', 'drogue on','Location','NorthWest')
+print -dpng 'glmfitSSTDrogueSE.png'
+% im = imread('image.tif');
+% f = figure, imshow(im, 'Border', 'tight');
+% rectangle('Position', [100, 100, 10, 10]);
+% print(f, '-r80', '-dtiff', 'image2.tif');
 
+figure;
 plot(1:12,sstRawDOnStats.se,1:12,sstDOnStats.se,'Linewidth',2)
 xlabel('coefficients')
 ylabel('standard errors in glmfit')
 title('Raw/Clean standard error from glmfit on sea surface temperatures') 
 legend('Raw data', 'Clean Data','Location','NorthWest')
+print -dpng 'glmfitSSTRawSE.png'
 
+figure;
 plot(1:12,sstDOnStats.p,1:12,sstdoffstats.p,1:12,sstRawDOnStats.p)
 xlabel('coefficients')
 ylabel('p-values in glmfit')
 title('p-values for 12 data vectors with drogue on/off, sst, and raw/clean analysis') 
 legend('Clean Regress on SST with Drogue On','Clean regress on SST with Drogue Off','Raw regress on SST with Drogue On','Location','NorthWest')
+print -dpng 'glmfitSSTPvals.png'
+
+figure;
+plot(1:12,sstDonFit,1:12,sstdofffit,1:12,sstRawDOnFit)
+xlabel('coefficients')
+ylabel('betas from glmfit')
+title('beta estimates for sst using 11 data vectors with drogue on/off, and raw/clean analysis') 
+legend('Clean Regress on SST with Drogue On','Clean regress on SST with Drogue Off','Raw regress on SST with Drogue On','Location','NorthWest')
+print -dpng 'glmfitSSTRegress.png'
 
 plot(1:12,avgGLMPValues)
 xlabel('coefficients')
 ylabel('mean of p-values in glmfit')
 title('mean of p-values for 12 data vectors with drogue on/off, sst, and raw/clean analysis')
-
-
-% hold on;
-% plot(arc2008DOnSST,sst2008FitDOn)
-% xlabel('Drifter SST Measurements')
-% ylabel('y-hat estimates for SST measurements')
-% title('GLM Value y-hat estimates for 2008 Arctic SST vs Actual Measurements') 
-
-%[b,dev,stats] = glmfit(X,y,distr)
-% x = [2100 2300 2500 2700 2900 3100 3300 3500 3700 3900 4100 4300]';
-% n = [48 42 31 34 31 21 23 23 21 16 17 21]';
-% y = [1 2 0 3 8 8 14 17 19 15 17 21]';
-% b = glmfit(x,[y n],'poisson','link','probit');
-% yfit = glmval(b, x,'probit','size', n);
-% plot(x, y./n,'o',x,yfit./n,'-','LineWidth',2)
+print -dpng 'glmfitSSTMeanPvals.png'

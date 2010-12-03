@@ -8,14 +8,6 @@ arc2007Clean = drifterDataClean(arc2007);
 [platID2007Clean obsTime2007Clean obsLat2007Clean obsLong2007Clean sst2007Clean ... 
     ewCurrent2007Clean nsCurrent2007Clean eLat2007Clean eLong2007Clean ...
     expNum2007Clean wmo2007Clean drogue2007Clean]=drifterDataExplodeColumns(arc2007Clean);
-[platID2008 obsTime2008 obsLat2008 obsLong2008 sst2008 ewCurrent2008 nsCurrent2008 ...
-    eLat2008 eLong2008 expNum2008 wmo2008 drogue2008]=drifterDataImport('Data/2008_k_arc.csv');
-arc2008 = [platID2008 obsTime2008 obsLat2008 obsLong2008 sst2008 ewCurrent2008 ... 
-    nsCurrent2008 eLat2008 eLong2008 expNum2008 wmo2008 drogue2008];
-arc2008Clean = drifterDataClean(arc2008);
-[platID2008Clean obsTime2008Clean obsLat2008Clean obsLong2008Clean sst2008Clean ...
-    ewCurrent2008Clean nsCurrent2008Clean eLat2008Clean eLong2008Clean ...
-    expNum2008Clean wmo2008Clean drogue2008Clean] = drifterDataExplodeColumns(arc2008Clean);
 
 %Create subsets of data for analysis
 length(drogue2007)-length(drogue2007Clean)
@@ -34,11 +26,9 @@ arc2007DOnResponseRaw=arc2007DonRaw(:,5);
 
 arc2007don=arc2007Clean(logical(drogue2007Clean),:);
 arc2007dondrogue=arc2007Clean(logical(drogue2007Clean),11);
-arc2007doffdrogue=arc2007Clean(logical(~drogue2007Clean),11);
+arc2007DOffdrogue=arc2007Clean(logical(~drogue2007Clean),11);
 arc2007RawDOn=arc2007(logical(drogue2007),:);
 arc2007RawDOnSST=arc2007(logical(drogue2007),4);
-arc2008DOnSST=arc2008Clean(logical(~arc2008Clean(:,11)),4);
-arc2008DOffSST=arc2008Clean(logical(arc2008Clean(:,11)),4);
 
 %analysis: standard error on drogue on/off, coefficients on sst, standard
 %error on clean vs unclean data on sst.
@@ -55,7 +45,7 @@ drogueonstats.p
 drogueonstats.coeffcorr
 drogueonstats.se
 
-[drogueofffit,drogueOffDev,drogueoffstats]=glmfit(arc2007doff,arc2007doffdrogue,'normal');
+[drogueofffit,drogueOffDev,drogueoffstats]=glmfit(arc2007DOff,arc2007DOffdrogue,'normal');
 drogueofffit
 drogueoffstats.p
 drogueoffstats.coeffcorr
@@ -85,31 +75,44 @@ avgGLMPValues=mean(cat(2,sstRawDOnStats.p,sstdoffstats.p,sstDOnStats.p),2);
 %regression.
 
 %Plot the analysis results
+figure;
 plot(1:12,sstdoffstats.se,1:12,sstDOnStats.se,'Linewidth',2)
 xlabel('coefficients')
 ylabel('standard errors in glmfit')
 title('Drogue on/off standard error from glmfit on sea surface temperatures') 
 legend('drogue off', 'drogue on','Location','NorthWest')
+print -dpng 'glmfitSSTDrogueSE.png'
+% im = imread('image.tif');
+% f = figure, imshow(im, 'Border', 'tight');
+% rectangle('Position', [100, 100, 10, 10]);
+% print(f, '-r80', '-dtiff', 'image2.tif');
 
+figure;
 plot(1:12,sstRawDOnStats.se,1:12,sstDOnStats.se,'Linewidth',2)
 xlabel('coefficients')
 ylabel('standard errors in glmfit')
 title('Raw/Clean standard error from glmfit on sea surface temperatures') 
 legend('Raw data', 'Clean Data','Location','NorthWest')
+print -dpng 'glmfitSSTRawSE.png'
 
+figure;
 plot(1:12,sstDOnStats.p,1:12,sstdoffstats.p,1:12,sstRawDOnStats.p)
 xlabel('coefficients')
 ylabel('p-values in glmfit')
 title('p-values for 12 data vectors with drogue on/off, sst, and raw/clean analysis') 
 legend('Clean Regress on SST with Drogue On','Clean regress on SST with Drogue Off','Raw regress on SST with Drogue On','Location','NorthWest')
+print -dpng 'glmfitSSTPvals.png'
 
+figure;
 plot(1:12,sstDonFit,1:12,sstdofffit,1:12,sstRawDOnFit)
 xlabel('coefficients')
 ylabel('betas from glmfit')
 title('beta estimates for sst using 11 data vectors with drogue on/off, and raw/clean analysis') 
 legend('Clean Regress on SST with Drogue On','Clean regress on SST with Drogue Off','Raw regress on SST with Drogue On','Location','NorthWest')
+print -dpng 'glmfitSSTRegress.png'
 
 plot(1:12,avgGLMPValues)
 xlabel('coefficients')
 ylabel('mean of p-values in glmfit')
 title('mean of p-values for 12 data vectors with drogue on/off, sst, and raw/clean analysis')
+print -dpng 'glmfitSSTMeanPvals.png'
