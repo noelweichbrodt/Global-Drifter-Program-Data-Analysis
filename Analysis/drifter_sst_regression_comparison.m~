@@ -57,9 +57,18 @@ sst2008LimitedEstimateMean = mean(sst2008LimitedFitDOn);
 
 %Plot the analysis results
 
+hold on;
+plot(min(arc2008DOnResponseClean):max(arc2008DOnResponseClean),sst2008Mean
+    min(arc2008DOnResponseClean):max(arc2008DOnResponseClean), sst2008EstimateMean, ...
+    min(arc2008DOnResponseClean):max(arc2008DOnResponseClean), sst2008LimitedEstimateMean)
+ xlabel('SST')
+ ylabel('Mean')
+ title('GLM Value mean estimates for 2008 Arctic SST vs Actual Measurements') 
+ print -dpng 'glmfitSSTMeans.png'
+
  hold on;
- plot(1:length(sst2008DOnResponseClean),sst2008DOnResponseClean,1:length(sst2008DOnResponseClean),sst2008EstimateMean,1:length(sst2008DOnResponseClean),sst2008LimitedEstimateMean)
+ plot(1:length(arc2008DOnResponseClean),arc2008DOnResponseClean,1:length(arc2008DOnResponseClean),sst2008EstimateMean,1:length(arc2008DOnResponseClean),sst2008LimitedEstimateMean)
  xlabel('Observations')
- ylabel('SS')
-% title('GLM Value y-hat estimates for 2008 Arctic SST vs Actual Measurements') 
-% print -dpng 'glmfitSSTRawSE.png'
+ ylabel('SST')
+ title('GLM Value y-hat estimates for 2008 Arctic SST vs Actual Measurements') 
+ print -dpng 'glmfitSSTEst.png'
