@@ -32,13 +32,19 @@ arc2007DOnLimitedPredictorsClean=arc2007DOn(:,8:10);
 
 %modeling
 
-[sstDonFit,sstDOnDev,sstDOnStats]=glmfit(arc2007DOnPredictorsClean,arc2007DOnResponseClean,'normal');
-[sstDonFit,sstDOnDev,sstDOnStats]=glmfit(arc2007DOnPredictorsClean,arc2007DOnResponseClean,'normal');
+[sstDonFit,sstDOnDev,sstDOnStats]=...
+    glmfit(arc2007DOnPredictorsClean,arc2007DOnResponseClean,'normal');
+[sstDonLimitedFit,sstDOnLimitedDev,sstDOnLimitedStats]=...
+    glmfit(arc2007DOnLimitedPredictorsClean,arc2007DOnResponseClean,'normal');
+
+%tried poisson/binominal, but not only do they not really match they also
+%won't work with the negative numbers in y.
+%Probit link doesn't help due to singular matrix resulting in NaNs.
 
 %Compare 2007 glmfit using 2008 data against sat sst for 2008.
 [sst2008FitDOn, confidenceLow2008FitDOn,confidenceHigh2008FitDOn] = glmval(sstDonFit,arc2008DOnPredictorsClean,'probit',sstDOnStats);
-[sst2008LimitedFitDOn, confidenceLow2008LimitedFitDOn,confidenceHigh2008LimitedFitDOn] = glmval(sstDonFit,arc2008DOnLimitedPredictorsClean,'probit',sstDOnStats);
-
+[sst2008LimitedFitDOn, confidenceLow2008LimitedFitDOn,confidenceHigh2008LimitedFitDOn] = glmval(sstDonLimitedFit,arc2008DOnLimitedPredictorsClean,'probit',sstDOnLimitedStats);
+[sst2008PLimitedFitDOn, confidenceLow2008PLimitedFitDOn,confidenceHigh2008PLimitedFitDOn] = glmval(sstDonPFit,arc2008DOnLimitedPredictorsClean,'probit',sstDOnPStats);
 
 sst2008EstimateMean = mean(sst2008FitDOn);
 sst2008Mean = mean(arc2008DOnResponseClean);
@@ -51,17 +57,9 @@ sst2008LimitedEstimateMean = mean(sst2008LimitedFitDOn);
 
 %Plot the analysis results
 
-% hold on;
-% plot(arc2008DOnSST,sst2008FitDOn)
-% xlabel('Drifter SST Measurements')
-% ylabel('y-hat estimates for SST measurements')
+ hold on;
+ plot(1:length(sst2008DOnResponseClean),sst2008DOnResponseClean,1:length(sst2008DOnResponseClean),sst2008EstimateMean,1:length(sst2008DOnResponseClean),sst2008LimitedEstimateMean)
+ xlabel('Observations')
+ ylabel('SS')
 % title('GLM Value y-hat estimates for 2008 Arctic SST vs Actual Measurements') 
 % print -dpng 'glmfitSSTRawSE.png'
-
-%[b,dev,stats] = glmfit(X,y,distr)
-% x = [2100 2300 2500 2700 2900 3100 3300 3500 3700 3900 4100 4300]';
-% n = [48 42 31 34 31 21 23 23 21 16 17 21]';
-% y = [1 2 0 3 8 8 14 17 19 15 17 21]';
-% b = glmfit(x,[y n],'poisson','link','probit');
-% yfit = glmval(b, x,'probit','size', n);
-% plot(x, y./n,'o',x,yfit./n,'-','LineWidth',2)
