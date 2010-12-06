@@ -27,8 +27,8 @@ arcsst = [arc1988sst' arc1991sst' arc1992sst' arc1993sst' arc1994sst' ...
 
 arcsstpower=sum(arcsst)^2;
 
-arcSSTDbcoeff=zeros(length(arcsst),45);
-arcSSTDbdetail=zeros(length(arcsst),45);
+arcSSTDbcoeff=zeros(length(arcsst),factorial(45));
+arcSSTDbdetail=zeros(length(arcsst),factorial(45));
 arcSSTDbPower=[0];
 for i=1:45
     [coeff,details] = wavedec(arcsst,i,['db' int2str(i)]);
@@ -69,12 +69,6 @@ end
 
 %visualization
 
-plot(arcsst);
-xlabel('Observation Time')
-ylabel('SST')
-title('1998-2007 Arctic SST Observations') 
-print -dpng 'Visualizations/arcSST.png'
-
 plot(arcSSTDbPower,'go-');
 hold on;
 plot(arcSSTMeyPower,'ro-');
@@ -84,6 +78,6 @@ hold on;
 plot(arcSSTCoifPower,'bo-');
 xlabel('Wavelet level')
 ylabel('Power')
-title('1998-2007 Arctic SST Power for multiple wavelet types at multiple levels') 
+title('Power for multiple wavelet types at multiple levels') 
 print -dpng 'Visualizations/waveletPower.png'
 
