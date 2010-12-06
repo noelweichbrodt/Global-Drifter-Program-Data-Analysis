@@ -27,15 +27,17 @@ arcsst = [arc1988sst' arc1991sst' arc1992sst' arc1993sst' arc1994sst' ...
 
 arcsstpower=sum(arcsst)^2;
 
-arcSSTDbcoeff=zeros(length(arcsst),factorial(45));
-arcSSTDbdetail=zeros(length(arcsst),factorial(45));
+arcSSTDbcoeff=zeros(length(arcsst),18);
+arcSSTDbdetail=zeros(length(arcsst),18);
 arcSSTDbPower=[0];
-for i=1:45
+for i=1:18
     [coeff,details] = wavedec(arcsst,i,['db' int2str(i)]);
     arcSSTDbcoeff(1:length(coeff),i)=coeff;
     arcSSTDbdetail(1:length(details),i)=details;
     arcSSTDbPower(i)=sum(coeff)^2/arcsstpower;
 end
+
+'end of db'
 
 arcSSTDMeycoeff=zeros(length(arcsst),6);
 arcSSTDMeydetail=zeros(length(arcsst),6);
@@ -47,15 +49,19 @@ for i=1:6
     arcSSTMeyPower(i)=sum(coeff)^2/arcsstpower;
 end
 
-arcSSTSSymcoeff=zeros(length(arcsst),45);
-arcSSTSSymdetail=zeros(length(arcsst),45);
+'end of mey'
+
+arcSSTSSymcoeff=zeros(length(arcsst),18);
+arcSSTSSymdetail=zeros(length(arcsst),18);
 arcSSTSymPower=[0];
-for i=1:45
+for i=1:18
     [coeff,details] = wavedec(arcsst,i,['sym' int2str(i)]);
     arcSSTSSymcoeff(1:length(coeff),i)=coeff;
     arcSSTSSymdetail(1:length(details),i)=details;
     arcSSTSymPower(i)=sum(coeff)^2/arcsstpower;
 end
+
+'end of sym'
 
 arcSSTCoiefCoeff=zeros(length(arcsst),5);
 arcSSTSCoifDetail=zeros(length(arcsst),5);
@@ -67,17 +73,26 @@ for i=1:5
     arcSSTCoifPower(i)=sum(coeff)^2/arcsstpower;
 end
 
+'end of coif'
+
 %visualization
+
+plot(arcsst);
+xlabel('Observation Time')
+ylabel('SST')
+title('1998-2007 Arctic SST Observations') 
+print -dpng 'Visualizations/arcSST.png'
 
 plot(arcSSTDbPower,'go-');
 hold on;
 plot(arcSSTMeyPower,'ro-');
 hold on;
-plot(arcSSTSymPower,'yo-');
+plot(arcSSTSymPower,'mo-');
 hold on;
 plot(arcSSTCoifPower,'bo-');
 xlabel('Wavelet level')
 ylabel('Power')
-title('Power for multiple wavelet types at multiple levels') 
-print -dpng 'Visualizations/waveletPower.png'
+title('1998-2007 Arctic SST Power for multiple wavelet types at multiple levels') 
+legend('Daubechies' '
+print -dpng 'Visualizations/waveletPower16.png'
 

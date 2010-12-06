@@ -26,16 +26,19 @@ arcsst = [arc1988sst' arc1991sst' arc1992sst' arc1993sst' arc1994sst' ...
 %wavelet decomposition
 
 arcsstpower=sum(arcsst)^2;
+max_level=21;
 
-arcSSTDbcoeff=zeros(length(arcsst),45);
-arcSSTDbdetail=zeros(length(arcsst),45);
+arcSSTDbcoeff=zeros(length(arcsst),max_level);
+arcSSTDbdetail=zeros(length(arcsst),max_level);
 arcSSTDbPower=[0];
-for i=1:45
+for i=1:max_level
     [coeff,details] = wavedec(arcsst,i,['db' int2str(i)]);
     arcSSTDbcoeff(1:length(coeff),i)=coeff;
     arcSSTDbdetail(1:length(details),i)=details;
     arcSSTDbPower(i)=sum(coeff)^2/arcsstpower;
 end
+
+'end of db'
 
 arcSSTDMeycoeff=zeros(length(arcsst),6);
 arcSSTDMeydetail=zeros(length(arcsst),6);
@@ -47,15 +50,19 @@ for i=1:6
     arcSSTMeyPower(i)=sum(coeff)^2/arcsstpower;
 end
 
-arcSSTSSymcoeff=zeros(length(arcsst),45);
-arcSSTSSymdetail=zeros(length(arcsst),45);
+'end of mey'
+
+arcSSTSSymcoeff=zeros(length(arcsst),max_level);
+arcSSTSSymdetail=zeros(length(arcsst),max_level);
 arcSSTSymPower=[0];
-for i=1:45
+for i=1:max_level
     [coeff,details] = wavedec(arcsst,i,['sym' int2str(i)]);
     arcSSTSSymcoeff(1:length(coeff),i)=coeff;
     arcSSTSSymdetail(1:length(details),i)=details;
     arcSSTSymPower(i)=sum(coeff)^2/arcsstpower;
 end
+
+'end of sym'
 
 arcSSTCoiefCoeff=zeros(length(arcsst),5);
 arcSSTSCoifDetail=zeros(length(arcsst),5);
@@ -66,6 +73,8 @@ for i=1:5
     arcSSTSCoifDetail(1:length(details),i)=details;
     arcSSTCoifPower(i)=sum(coeff)^2/arcsstpower;
 end
+
+'end of coif'
 
 %visualization
 
@@ -79,11 +88,12 @@ plot(arcSSTDbPower,'go-');
 hold on;
 plot(arcSSTMeyPower,'ro-');
 hold on;
-plot(arcSSTSymPower,'yo-');
+plot(arcSSTSymPower,'mo-');
 hold on;
 plot(arcSSTCoifPower,'bo-');
 xlabel('Wavelet level')
 ylabel('Power')
-title('1998-2007 Arctic SST Power for multiple wavelet types at multiple levels') 
+title(['1998-2007 Arctic SST Power for multiple wavelet types up to ' int2str(max_level) ' levels']) 
+legend('Daubechies', 'Discrete Meyer', 'Symlets', 'Coiflets')
 print -dpng 'Visualizations/waveletPower.png'
 
