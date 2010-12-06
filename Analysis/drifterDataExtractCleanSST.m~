@@ -1,0 +1,10 @@
+function sst = drifterDataExtractCleanSST(path)
+[platID obsTime obsLat obsLong sst ewCurrent ... 
+    nsCurrent eLat eLong expNum wmo drogue] = ... 
+    drifterDataImport(path);
+data = [platID obsTime obsLat obsLong sst ...
+    ewCurrent nsCurrent eLat eLong expNum wmo drogue];
+dataClean = drifterDataClean(data);
+dataDOn=dataClean(logical(~drogueClean),:);
+
+sst = dataDOn(:,5);

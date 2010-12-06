@@ -49,6 +49,15 @@ arc2007DOnLimitedPredictorsClean=arc2007DOn(:,8:10);
 sst2008EstimateMean = mean(sst2008FitDOn);
 sst2008Mean = mean(arc2008DOnResponseClean);
 sst2008LimitedEstimateMean = mean(sst2008LimitedFitDOn);
+sst2008median = median(arc2008DOnResponseClean);
+sst2008mode = mode(arc2008DOnResponseClean);
+sst2008max = max(arc2008DOnResponseClean);
+sst2008min = min(arc2008DOnResponseClean);
+sst2007Mean = mean(arc2007DOnResponseClean);
+sst2007median = median(arc2007DOnResponseClean);
+sst2007mode = mode(arc2007DOnResponseClean);
+sst2007max = max(arc2007DOnResponseClean);
+sst2007min = min(arc2007DOnResponseClean);
 
 %Compute yearly average of sst from 2008 data, compare agaist sat sst from
 %2008.
@@ -57,14 +66,14 @@ sst2008LimitedEstimateMean = mean(sst2008LimitedFitDOn);
 
 %Plot the analysis results
 
-% hold on;
-% plot(min(arc2008DOnResponseClean):max(arc2008DOnResponseClean),sst2008Mean);
-%     min(arc2008DOnResponseClean):max(arc2008DOnResponseClean), sst2008EstimateMean, ...
-%     min(arc2008DOnResponseClean):max(arc2008DOnResponseClean), sst2008LimitedEstimateMean)
-%  xlabel('SST')
-%  ylabel('Mean')
-%  title('GLM Value mean estimates for 2008 Arctic SST vs Actual Measurements') 
-%  print -dpng 'glmfitSSTMeans.png'
+hold on;
+plot(min(arc2008DOnResponseClean):max(arc2008DOnResponseClean),sst2008Mean,'o',...
+    min(arc2008DOnResponseClean):max(arc2008DOnResponseClean), sst2008EstimateMean,'o', ...
+    min(arc2008DOnResponseClean):max(arc2008DOnResponseClean), sst2008LimitedEstimateMean,'o');
+ xlabel('SST')
+ ylabel('Mean')
+ title('GLM Value mean estimates for 2008 Arctic SST vs Actual Measurements') 
+ print -dpng 'glmfitSSTMeans.png'
 
  hold on;
  plot(1:length(arc2008DOnResponseClean),arc2008DOnResponseClean,1:length(arc2008DOnResponseClean),sst2008EstimateMean,1:length(arc2008DOnResponseClean),sst2008LimitedEstimateMean)
