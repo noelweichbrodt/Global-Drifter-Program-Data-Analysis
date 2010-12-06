@@ -81,7 +81,7 @@ xlabel('coefficients')
 ylabel('standard errors in glmfit')
 title('Drogue on/off standard error from glmfit on sea surface temperatures') 
 legend('drogue off', 'drogue on','Location','NorthWest')
-print -dpng 'glmfitSSTDrogueSE.png'
+print -dpng 'Visualizations/glmfitSSTDrogueSE.png'
 % im = imread('image.tif');
 % f = figure, imshow(im, 'Border', 'tight');
 % rectangle('Position', [100, 100, 10, 10]);
@@ -93,7 +93,7 @@ xlabel('coefficients')
 ylabel('standard errors in glmfit')
 title('Raw/Clean standard error from glmfit on sea surface temperatures') 
 legend('Raw data', 'Clean Data','Location','NorthWest')
-print -dpng 'glmfitSSTRawSE.png'
+print -dpng 'Visualizations/glmfitSSTRawSE.png'
 
 figure;
 plot(1:12,sstDOnStats.p,1:12,sstdoffstats.p,1:12,sstRawDOnStats.p)
@@ -101,7 +101,7 @@ xlabel('coefficients')
 ylabel('p-values in glmfit')
 title('p-values for 12 data vectors with drogue on/off, sst, and raw/clean analysis') 
 legend('Clean Regress on SST with Drogue On','Clean regress on SST with Drogue Off','Raw regress on SST with Drogue On','Location','NorthWest')
-print -dpng 'glmfitSSTPvals.png'
+print -dpng 'Visualizations/glmfitSSTPvals.png'
 
 figure;
 plot(1:12,sstDonFit,1:12,sstdofffit,1:12,sstRawDOnFit)
@@ -109,10 +109,10 @@ xlabel('coefficients')
 ylabel('betas from glmfit')
 title('beta estimates for sst using 11 data vectors with drogue on/off, and raw/clean analysis') 
 legend('Clean Regress on SST with Drogue On','Clean regress on SST with Drogue Off','Raw regress on SST with Drogue On','Location','NorthWest')
-print -dpng 'glmfitSSTRegress.png'
+print -dpng 'Visualizations/glmfitSSTRegress.png'
 
 plot(1:12,avgGLMPValues)
 xlabel('coefficients')
 ylabel('mean of p-values in glmfit')
 title('mean of p-values for 12 data vectors with drogue on/off, sst, and raw/clean analysis')
-print -dpng 'glmfitSSTMeanPvals.png'
+print -dpng 'Visualizations/glmfitSSTMeanPvals.png'

@@ -44,7 +44,6 @@ arc2007DOnLimitedPredictorsClean=arc2007DOn(:,8:10);
 %Compare 2007 glmfit using 2008 data against sat sst for 2008.
 [sst2008FitDOn, confidenceLow2008FitDOn,confidenceHigh2008FitDOn] = glmval(sstDonFit,arc2008DOnPredictorsClean,'probit',sstDOnStats);
 [sst2008LimitedFitDOn, confidenceLow2008LimitedFitDOn,confidenceHigh2008LimitedFitDOn] = glmval(sstDonLimitedFit,arc2008DOnLimitedPredictorsClean,'probit',sstDOnLimitedStats);
-[sst2008PLimitedFitDOn, confidenceLow2008PLimitedFitDOn,confidenceHigh2008PLimitedFitDOn] = glmval(sstDonPFit,arc2008DOnLimitedPredictorsClean,'probit',sstDOnPStats);
 
 sst2008EstimateMean = mean(sst2008FitDOn);
 sst2008Mean = mean(arc2008DOnResponseClean);
@@ -73,11 +72,11 @@ plot(min(arc2008DOnResponseClean):max(arc2008DOnResponseClean),sst2008Mean,'o',.
  xlabel('SST')
  ylabel('Mean')
  title('GLM Value mean estimates for 2008 Arctic SST vs Actual Measurements') 
- print -dpng 'glmfitSSTMeans.png'
+ print -dpng 'Visualizations/glmfitSSTMeans.png'
 
  hold on;
  plot(1:length(arc2008DOnResponseClean),arc2008DOnResponseClean,1:length(arc2008DOnResponseClean),sst2008EstimateMean,1:length(arc2008DOnResponseClean),sst2008LimitedEstimateMean)
  xlabel('Observations')
  ylabel('SST')
  title('GLM Value y-hat estimates for 2008 Arctic SST vs Actual Measurements') 
- print -dpng 'glmfitSSTEst.png'
+ print -dpng 'Visualizations/glmfitSSTEst.png'
