@@ -140,10 +140,6 @@ for i=1:8
     arcSSTProcessedMey64Power(i)=sum(foo.ydata)^2/arcsstpower;
 end
 
-%prediction
-
-
-
 %visualization
 
 plot(arcsst);
@@ -192,5 +188,5 @@ xlabel('Observation Time')
 ylabel('SST')
 title('1988-2007 Arctic SST Observations') 
 hold on;
-plot(arcSSTProcessedMey64Coeff(8),'ro-');
-print -dpng 'Visualizations/arcSSTMey64L8.png'
+plot(arcSSTProcessedMey70kCoeff(6),'ro-');
+print -dpng 'Visualizations/arcSSTMey70kL6.png'

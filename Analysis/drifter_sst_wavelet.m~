@@ -76,9 +76,9 @@ end
 
 'end of coif'
 
-arcSSTProcessedMey70kCoeff=zeros(70000,6);
+arcSSTProcessedMey70kCoeff=zeros(70000,8);
 arcSSTProcessedMey70kPower=[0];
-for i=1:6
+for i=8:8
     foo=load(['Data/arcSSTProcessedMey70kL' int2str(i) '.mat'],'ydata');
     arcSSTProcessedMey70kCoeff(1:length(foo.ydata),i)=foo.ydata;
     arcSSTProcessedMey70kPower(i)=sum(foo.ydata)^2/arcsstpower;
@@ -139,10 +139,6 @@ for i=1:8
     arcSSTProcessedMey64Coeff(1:length(foo.ydata),i)=foo.ydata;
     arcSSTProcessedMey64Power(i)=sum(foo.ydata)^2/arcsstpower;
 end
-
-%prediction
-
-
 
 %visualization
 
